@@ -8,9 +8,10 @@ const generateTasks = () => {
   for (let i = 0; i < 6; i++) {
     const a = generateRandomNumber(10);
     const b = generateRandomNumber(10);
+    const sum = a + b;
     tasks.push({
-      plus: { task: `${a} + ${b}`, result: a + b },
-      minus: { task: `${a + b} - ${b}`, result: a },
+      plus: { task: `${a} + ${b}`, result: sum },
+      minus: { task: `${sum} - ${b}`, result: a },
     });
   }
   return tasks;
