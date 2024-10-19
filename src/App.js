@@ -14,7 +14,9 @@ const generateTasks = () => {
       minus: { task: `${sum} - ${b}`, result: a },
     });
   }
-  return tasks;
+  
+  // Shuffle tasks to mix plus and minus pairs
+  return tasks.sort(() => Math.random() - 0.5);
 };
 
 const MemoryGame = () => {
@@ -29,6 +31,7 @@ const MemoryGame = () => {
   useEffect(() => {
     if (selected.length === 2) {
       const [first, second] = selected;
+      // Check if selected pair matches (Plus and Minus results match)
       if (
         (first.type === "plus" && second.type === "minus" && first.result === second.result) ||
         (first.type === "minus" && second.type === "plus" && first.result === second.result)
@@ -44,13 +47,19 @@ const MemoryGame = () => {
   }, [selected]);
 
   useEffect(() => {
+    // Game is over when all pairs are matched
     if (matched.length === tasks.length * 2) {
       setIsGameOver(true);
     }
   }, [matched]);
 
   const handleCardClick = (task, type) => {
-    if (selected.length < 2 && !selected.some((sel) => sel.task === task.task) && !matched.some((sel) => sel.task === task.task)) {
+    // Only allow two cards to be selected at a time, and ignore already matched cards
+    if (
+      selected.length < 2 &&
+      !selected.some((sel) => sel.task === task.task) &&
+      !matched.some((sel) => sel.task === task.task)
+    ) {
       setSelected([...selected, { ...task, type }]);
     }
   };
@@ -74,8 +83,8 @@ const MemoryGame = () => {
             <div
               key={index}
               className={`card ${matched.includes(task.plus) ? "matched" : ""} ${
-                showError && selected.includes(task.plus) ? "error" : ""
-              }`}
+                selected.includes(task.plus) ? "selected" : ""
+              } ${showError && selected.includes(task.plus) ? "error" : ""}`}
               onClick={() => handleCardClick(task.plus, "plus")}
             >
               {task.plus.task}
@@ -88,8 +97,8 @@ const MemoryGame = () => {
             <div
               key={index}
               className={`card ${matched.includes(task.minus) ? "matched" : ""} ${
-                showError && selected.includes(task.minus) ? "error" : ""
-              }`}
+                selected.includes(task.minus) ? "selected" : ""
+              } ${showError && selected.includes(task.minus) ? "error" : ""}`}
               onClick={() => handleCardClick(task.minus, "minus")}
             >
               {task.minus.task}
